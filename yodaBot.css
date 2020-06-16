@@ -1,0 +1,28 @@
+#fullChat{
+  border: solid 1px black;
+}
+
+#messageInput{
+  border:solid 1px black;
+}
+
+.userSender{
+  list-style: none;
+  position: relative;
+  background-color: lightblue;
+  border-radius: 1px
+}
+
+.yodaSender{
+  list-style: none;
+  position: relative;
+  background-color: lightgreen;
+  border-radius: 1px
+}
+
+.yodaSenderList{
+  list-style: none;
+  position: relative;
+  background-color: lightgreen;
+  border-radius: 1px
+}
