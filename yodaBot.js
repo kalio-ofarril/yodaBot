@@ -99,29 +99,6 @@ function sendMessage(){
   $('#messageList').append('<li class="userSender">'+currMsg+'</li>');
   allMsgs = allMsgs + '<li class="userSender">'+currMsg+'</li>';
 
-  
-  //Get all msgs in string form, this to save them as cookies since we use no db
-
-  /*
-  $('#messageList').each(function(){
-    var allMsgsList = $(this).find('li');
-    allMsgsList.each(function(){
-      var liTxt = $(this).text();
-      var liClass = $(this).attr('class');
-      var li = {'msg':liTxt, 'class':liClass}
-      if(liTxt.length>30 && !liTxt.includes(" ")){
-        console.log(liTxt);
-      }else{
-        allMsgs.push({'msg':liTxt, 'class':liClass});
-      }
-    });
-  })
-  allMsgs.push({'msg':currMsg, 'class':'userSender'});
-  var newMsgs = ""
-  allMsgs.forEach(function(msg, index){
-    newMsgs = newMsgs + "<li class="+msg['class']+">"+msg['msg']+"</li>";
-  })
-*/
   //Check if force is in current msg
   var currMsgWords = currMsg.split(" ");
   currMsgWords.forEach(function(value, index){
