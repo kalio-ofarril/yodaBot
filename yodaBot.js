@@ -1,3 +1,4 @@
+var allMsgs;
 
 $(document).ready(function(){
   $("#writingTxt").hide();
@@ -5,21 +6,20 @@ $(document).ready(function(){
   //Getting cookies to see if token hasn't expired, cookies will expire few minutes before token
   var accessTokenCookie = Cookies.get('accessToken');
   var sessionTokenCookie = Cookies.get('sessionToken');
-  var msgs;
 
   //If token isnt expired refresh them, if it is expired acquire new one
   if(accessTokenCookie == null || sessionTokenCookie == null || accessTokenCookie == 'undefined' || sessionTokenCookie == "undefined"){
     userDataCookie = getToken();
     Cookies.remove('msgs');
     Cookies.set('noAnswer', 0);
-    msgs = "";
+    allMsgs = "";
   }else{
     userDataCookie = refreshToken(accessTokenCookie);
-    msgs = Cookies.get('msgs');
+    allMsgs = Cookies.get('msgs');
   }
   Cookies.set('accessToken',userDataCookie['accessToken'], {expires:0.035});
   Cookies.set('sessionToken',userDataCookie['sessionToken'], {expires:0.035});
-  $("#messageList").html(msgs);
+  $("#messageList").append(allMsgs);
   var messageBody = document.querySelector('#fullChat');
   messageBody.scrollTop = messageBody.scrollHeight - messageBody.clientHeight;
 
@@ -92,12 +92,17 @@ function refreshToken(accessToken){
 
 
 function sendMessage(){
-  var allMsgs = [];
   var currMsg = $("#messageText").val();
   var noAnswer;
   var continueConv = true;
 
+  $('#messageList').append('<li class="userSender">'+currMsg+'</li>');
+  allMsgs = allMsgs + '<li class="userSender">'+currMsg+'</li>';
+
+  
   //Get all msgs in string form, this to save them as cookies since we use no db
+
+  /*
   $('#messageList').each(function(){
     var allMsgsList = $(this).find('li');
     allMsgsList.each(function(){
@@ -116,13 +121,14 @@ function sendMessage(){
   allMsgs.forEach(function(msg, index){
     newMsgs = newMsgs + "<li class="+msg['class']+">"+msg['msg']+"</li>";
   })
-
+*/
   //Check if force is in current msg
   var currMsgWords = currMsg.split(" ");
   currMsgWords.forEach(function(value, index){
     if(value.toLowerCase()=="force"){
       var locationList = getPokemonPlaces();
-      newMsgs = newMsgs + '<li class="yodaSender">'+locationList+'</li>';
+      $('#messageList').append('<li class="yodaSender">'+locationList+'</li>');
+      allMsgs = allMsgs + '<li class="yodaSender">'+locationList+'</li>';
       Cookies.set('noAnswer', 0)
       continueConv = false;
     }
@@ -143,13 +149,16 @@ function sendMessage(){
           Cookies.set('noAnswer', noAnswer);
           if(noAnswer > 1){
             var pokemonList = getPokemonList();
-            newMsgs = newMsgs + '<li class="yodaSender">'+pokemonList+"</li>";
+            $('#messageList').append('<li class="yodaSender">'+pokemonList+'</li>');
+            allMsgs = allMsgs + '<li class="yodaSender">'+pokemonList+"</li>";
             Cookies.set('noAnswer', 0)
           }else{
-            newMsgs = newMsgs + '<li class="yodaSender">'+res['answers'][0]['message']+"</li>";
+            $('#messageList').append('<li class="yodaSender">'+res['answers'][0]['message']+'</li>');
+            allMsgs = allMsgs + '<li class="yodaSender">'+res['answers'][0]['message']+"</li>";
           }
         }else{
-          newMsgs = newMsgs + '<li class="yodaSender">'+res['answers'][0]['message']+"</li>";
+          $('#messageList').append('<li class="yodaSender">'+res['answers'][0]['message']+'</li>');
+          allMsgs = allMsgs + '<li class="yodaSender">'+res['answers'][0]['message']+"</li>";
           Cookies.set('noAnswer', 0)
         }
       }
@@ -157,9 +166,9 @@ function sendMessage(){
   }
 
   //Save and set current msg with response
-  Cookies.set('msgs', newMsgs, {expires:0.035});
-  $("#messageList").html(newMsgs);
+  Cookies.set('msgs', allMsgs, {expires:0.035});
   $("#messageText").val("");
+
 }
 
 
@@ -183,6 +192,8 @@ function getPokemonList(){
     }
   })
   return pokemonList;
+
+  
 }
 
 
